@@ -225,6 +225,7 @@ public class CacheHistoryPanel extends StatisticPanel implements ActionListener 
 		comboBoxCache.addItem("documentCache");
 		comboBoxCache.addItem("fieldValueCache");
 		comboBoxCache.addItem("filterCache");
+        comboBoxCache.addItem("perSegFilter");
 		comboBoxCache.addItem("queryResultCache");
 		comboBoxCache.addActionListener(new ActionListener() {
 
@@ -273,6 +274,7 @@ public class CacheHistoryPanel extends StatisticPanel implements ActionListener 
 		xyDataset.removeSeries(I18n.get(PREFIX + "Inserts"));
 		xyDataset.removeSeries(I18n.get(PREFIX + "Evictions"));
 		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.filterCache"));
+        xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.perSegFilter"));
 		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.documentCache"));
 		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.queryResultCache"));
 		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.fieldValueCache"));
@@ -354,6 +356,7 @@ public class CacheHistoryPanel extends StatisticPanel implements ActionListener 
 	private void refreshHitRatio() {
 //		synchronized(statistic) {
 			addSerie(statistic.getFilterCacheData(), "hitratio", PREFIX + "hitratio.filterCache");
+            addSerie(statistic.getFilterCacheData(), "hitratio", PREFIX + "hitratio.perSegFilter");
 			addSerie(statistic.getDocumentCacheData(), "hitratio", PREFIX + "hitratio.documentCache");
 			addSerie(statistic.getQueryResultCacheData(), "hitratio", PREFIX + "hitratio.queryResultCache");
 			addSerie(statistic.getFieldValueCacheData(), "hitratio", PREFIX + "hitratio.fieldValueCache");

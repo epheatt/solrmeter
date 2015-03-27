@@ -31,12 +31,14 @@ public abstract class AbstractStatisticConnection {
 	public final static String DOCUMENT_CACHE_NAME = "documentCache";
 	public final static String FIELD_CACHE_NAME = "fieldCache";
 	public final static String FIELD_VALUE_CACHE_NAME = "fieldValueCache";
+	public final static String PER_SEGMENT_FILTER_NAME = "perSegFilter";
 	public final static String QUERY_RESULT_CACHE_NAME = "queryResultCache";
 	
 	public final static String CUMULATIVE_FILTER_CACHE_NAME = "cumulativeFilterCache";
 	public final static String CUMULATIVE_DOCUMENT_CACHE_NAME = "cumulativeDocumentCache";
 	public final static String CUMULATIVE_FIELD_VALUE_CACHE_NAME = "cumulativeFieldValueCache";
-	public final static String CUMULATIVE_QUERY_RESULT_CACHE_NAME = "cumulativeQueryResultCache";
+	public final static String CUMULATIVE_PER_SEGMENT_FILTER_NAME = "cumulativePerSegFilter";
+    public final static String CUMULATIVE_QUERY_RESULT_CACHE_NAME = "cumulativeQueryResultCache";
 	
 
 	public abstract Map<String, CacheData> getData() throws StatisticConnectionException;
@@ -52,6 +54,10 @@ public abstract class AbstractStatisticConnection {
 	public CacheData getFieldValueCacheData(Map<String, CacheData> map) {
 		return map.get(FIELD_VALUE_CACHE_NAME);
 	}
+
+    public CacheData getPerSegFilterData(Map<String, CacheData> map) {
+        return map.get(PER_SEGMENT_FILTER_NAME);
+    }
 	
 	public CacheData getQueryResultCacheData(Map<String, CacheData> map) {
 		return map.get(QUERY_RESULT_CACHE_NAME);
@@ -68,6 +74,10 @@ public abstract class AbstractStatisticConnection {
 	public CacheData getCumulativeFieldValueCacheData(Map<String, CacheData> map) {
 		return map.get(CUMULATIVE_FIELD_VALUE_CACHE_NAME);
 	}
+
+    public CacheData getCumulativePerSegFilterData(Map<String, CacheData> map) {
+        return map.get(CUMULATIVE_PER_SEGMENT_FILTER_NAME);
+    }
 	
 	public CacheData getCumulativeQueryResultCacheData(Map<String, CacheData> map) {
 		return map.get(CUMULATIVE_QUERY_RESULT_CACHE_NAME);

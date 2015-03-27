@@ -92,8 +92,8 @@ public abstract class AbstractRandomExecutor {
 	 */
 	public void incrementOperationsPerMinute() {
 		RandomOperationExecutorThread newThread = this.createThread(); 
-		threads.add(newThread);
-		if(running) {
+		if (newThread != null) threads.add(newThread);
+		if(running && newThread != null) {
 			newThread.start();
 		}
 		operationsPerMinute++;

@@ -32,11 +32,13 @@ public class RequestHandlerConnectionTestCase extends BaseTestCase {
 		RequestHandlerConnection connection = new RequestHandlerConnection(solrServer);
 		Map<String, CacheData> data = connection.getData();
 		assertNotNull(connection.getFilterCacheData(data));
+		assertNotNull(connection.getPerSegFilterData(data));
 		assertNotNull(connection.getDocumentCacheData(data));
 		assertNotNull(connection.getFieldValueCacheData(data));
 		assertNotNull(connection.getQueryResultCacheData(data));
 		
 		assertNotNull(connection.getCumulativeFilterCacheData(data));
+        assertNotNull(connection.getCumulativePerSegFilterData(data));
 		assertNotNull(connection.getCumulativeDocumentCacheData(data));
 		assertNotNull(connection.getCumulativeFieldValueCacheData(data));
 		assertNotNull(connection.getCumulativeQueryResultCacheData(data));
@@ -45,7 +47,7 @@ public class RequestHandlerConnectionTestCase extends BaseTestCase {
 	/*
 	 * 	<long name="cumulative_lookups">100</long>
 	 *	<long name="cumulative_hits">50</long>
-	 *	<str name="cumulative_hitratio">0.50</str>
+	 *	<float name="cumulative_hitratio">0.50</float>
 	 *	<long name="cumulative_inserts">100</long>
 	 *	<long name="cumulative_evictions">0</long>
 	 */
@@ -65,7 +67,7 @@ public class RequestHandlerConnectionTestCase extends BaseTestCase {
 	}
 	
 	private SolrServer createMockSolrServer() throws MalformedURLException {
-		return this.createMockSolrServer("queryResultCache", "fieldCache", "documentCache", "fieldValueCache", "filterCache");
+		return this.createMockSolrServer("queryResultCache", "fieldCache", "documentCache", "fieldValueCache", "filterCache", "perSegFilter");
 	}
 	
 	 private SolrServer createMockSolrServer(String... caches) throws MalformedURLException {
@@ -125,14 +127,14 @@ public class RequestHandlerConnectionTestCase extends BaseTestCase {
 	 *	<lst name="stats">
 	 *	<long name="lookups">10</long>
 	 *	<long name="hits">5</long>
-	 *	<str name="hitratio">0.50</str>
+	 *	<float name="hitratio">0.50</float>
 	 *	<long name="inserts">10</long>
 	 *	<long name="evictions">0</long>
 	 *	<long name="size">50</long>
 	 *	<long name="warmupTime">15</long>
 	 *	<long name="cumulative_lookups">100</long>
 	 *	<long name="cumulative_hits">50</long>
-	 *	<str name="cumulative_hitratio">0.50</str>
+	 *	<float name="cumulative_hitratio">0.50</float>
 	 *	<long name="cumulative_inserts">100</long>
 	 *	<long name="cumulative_evictions">0</long>
 	 *	</lst>
@@ -141,14 +143,14 @@ public class RequestHandlerConnectionTestCase extends BaseTestCase {
 		NamedList<Object> namedList = new NamedList<Object>();
 		namedList.add("lookups", new Long(10));
 		namedList.add("hits", new Long(5));
-		namedList.add("hitratio", "0.50");
+		namedList.add("hitratio", 0.50f);
 		namedList.add("inserts", new Long(10));
 		namedList.add("evictions", new Long(0));
 		namedList.add("size", new Long(50));
 		namedList.add("warmupTime", new Long(15));
 		namedList.add("cumulative_lookups", new Long(100));
 		namedList.add("cumulative_hits", new Long(50));
-		namedList.add("cumulative_hitratio", "0.50");
+		namedList.add("cumulative_hitratio", 0.50f);
 		namedList.add("cumulative_inserts", new Long(100));
 		namedList.add("cumulative_evictions", new Long(0));
 		return namedList;
@@ -159,11 +161,13 @@ public class RequestHandlerConnectionTestCase extends BaseTestCase {
 	    RequestHandlerConnection connection = new RequestHandlerConnection(solrServer);
 	    Map<String, CacheData> data = connection.getData();
 	    assertNotNull(connection.getFilterCacheData(data));
+        assertNull(connection.getPerSegFilterData(data));
 	    assertNull(connection.getDocumentCacheData(data));
 	    assertNull(connection.getFieldValueCacheData(data));
 	    assertNull(connection.getQueryResultCacheData(data));
 	    
 	    assertNotNull(connection.getCumulativeFilterCacheData(data));
+        assertNull(connection.getCumulativePerSegFilterData(data));
 	    assertNull(connection.getCumulativeDocumentCacheData(data));
 	    assertNull(connection.getCumulativeFieldValueCacheData(data));
 	    assertNull(connection.getCumulativeQueryResultCacheData(data));

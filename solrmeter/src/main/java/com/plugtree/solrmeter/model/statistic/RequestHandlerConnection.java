@@ -60,12 +60,14 @@ public class RequestHandlerConnection extends AbstractStatisticConnection {
 		try {
 			NamedList<Object> namedList = solrServer.request(request);
 			cacheData.put(FILTER_CACHE_NAME, getCacheData(namedList, "filterCache"));
+			cacheData.put(PER_SEGMENT_FILTER_NAME, getCacheData(namedList, "perSegFilter"));
 			cacheData.put(QUERY_RESULT_CACHE_NAME, getCacheData(namedList, "queryResultCache"));
 			cacheData.put(DOCUMENT_CACHE_NAME, getCacheData(namedList, "documentCache"));
 			cacheData.put(FIELD_VALUE_CACHE_NAME, getCacheData(namedList, "fieldValueCache"));
 			
 			cacheData.put(CUMULATIVE_FILTER_CACHE_NAME, getCumulativeCacheData(namedList, "filterCache"));
-			cacheData.put(CUMULATIVE_QUERY_RESULT_CACHE_NAME, getCumulativeCacheData(namedList, "queryResultCache"));
+			cacheData.put(CUMULATIVE_PER_SEGMENT_FILTER_NAME, getCumulativeCacheData(namedList, "perSegFilter"));
+            cacheData.put(CUMULATIVE_QUERY_RESULT_CACHE_NAME, getCumulativeCacheData(namedList, "queryResultCache"));
 			cacheData.put(CUMULATIVE_DOCUMENT_CACHE_NAME, getCumulativeCacheData(namedList, "documentCache"));
 			cacheData.put(CUMULATIVE_FIELD_VALUE_CACHE_NAME, getCumulativeCacheData(namedList, "fieldValueCache"));
 		} catch (Exception e) {
@@ -81,7 +83,7 @@ public class RequestHandlerConnection extends AbstractStatisticConnection {
 	      return null;
 	    }
 		NamedList<Object> stats = (NamedList<Object>)cache.get("stats");
-		return new CacheData((Long)stats.get("lookups"), (Long)stats.get("hits"), Float.valueOf((String)stats.get("hitratio")), (Long)stats.get("inserts"), (Long)stats.get("evictions"), Long.valueOf(stats.get("size").toString()), (Long)stats.get("warmupTime"));
+		return new CacheData((Long)stats.get("lookups"), (Long)stats.get("hits"), (Float)stats.get("hitratio"), (Long)stats.get("inserts"), (Long)stats.get("evictions"), Long.valueOf(stats.get("size").toString()), (Long)stats.get("warmupTime"));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -98,7 +100,7 @@ public class RequestHandlerConnection extends AbstractStatisticConnection {
        return null;
      }
    NamedList<Object> stats = (NamedList<Object>)cache.get("stats");
-		return new CacheData((Long)stats.get("cumulative_lookups"), (Long)stats.get("cumulative_hits"), Float.valueOf((String)stats.get("cumulative_hitratio")), (Long)stats.get("cumulative_inserts"), (Long)stats.get("cumulative_evictions"));
+		return new CacheData((Long)stats.get("cumulative_lookups"), (Long)stats.get("cumulative_hits"), (Float)stats.get("cumulative_hitratio"), (Long)stats.get("cumulative_inserts"), (Long)stats.get("cumulative_evictions"));
 	}
 	
 	private class MBeanRequest extends SolrRequest {

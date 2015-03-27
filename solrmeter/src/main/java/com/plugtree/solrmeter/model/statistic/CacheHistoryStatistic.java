@@ -42,6 +42,11 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	 * Stores the historical data of the filterCache
 	 */
 	private SortedMap<Long, CacheData> filterCacheData;
+
+	/**
+     * Stores the historical data of the perSegmentFilter
+     */
+    private SortedMap<Long, CacheData> perSegmentFilterData;
 	
 	/**
 	 * Stores the historical data of the documentCache
@@ -62,6 +67,11 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	 * Stores the cumulative data of the filterCache
 	 */
 	private CacheData filterCacheCumulativeData;
+
+    /**
+     * Stores the cumulative data of the perSegmentFilter
+     */
+    private CacheData perSegmentFilterCumulativeData;	
 	
 	/**
 	 * Stores the cumulative data of the documentCache
@@ -82,6 +92,11 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	 * Stores the description of the filterCache
 	 */
 	private String filterCacheDescription;
+
+    /**
+     * Stores the description of the perSegmentFilter
+     */
+    private String perSegmentFilterDescription;	
 	
 	/**
 	 * Connection with Solr statistics
@@ -100,6 +115,7 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		super();
 		this.connection = connection;
 		this.filterCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
+		this.perSegmentFilterData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
 		this.queryResultCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
 		this.documentCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
 		this.fieldValueCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
@@ -112,13 +128,14 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		Map<String, CacheData> cacheData = null;
 		try {
 			cacheData = connection.getData();
-//			filterCacheData.put(time, cacheData.get(RequestHandlerConnection.FILTER_CACHE_NAME));
 			put(time, filterCacheData, cacheData, RequestHandlerConnection.FILTER_CACHE_NAME);
+			put(time, perSegmentFilterData, cacheData, RequestHandlerConnection.PER_SEGMENT_FILTER_NAME);
 			put(time, queryResultCacheData, cacheData, RequestHandlerConnection.QUERY_RESULT_CACHE_NAME);
 			put(time, documentCacheData, cacheData, RequestHandlerConnection.DOCUMENT_CACHE_NAME);
 			put(time, fieldValueCacheData, cacheData, RequestHandlerConnection.FIELD_VALUE_CACHE_NAME);
 			
 			filterCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_FILTER_CACHE_NAME);
+            perSegmentFilterCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_PER_SEGMENT_FILTER_NAME);
 			queryResultCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_QUERY_RESULT_CACHE_NAME);
 			documentCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_DOCUMENT_CACHE_NAME);
 			fieldValueCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_FIELD_VALUE_CACHE_NAME);
@@ -137,10 +154,14 @@ public class CacheHistoryStatistic implements QueryStatistic {
   }
 
 
-  public SortedMap<Long, CacheData> getFilterCacheData() {
+    public SortedMap<Long, CacheData> getFilterCacheData() {
 		return filterCacheData;
 	}
-	
+
+    public SortedMap<Long, CacheData> getPerSegFilterData() {
+        return perSegmentFilterData;
+    }
+    
 	public SortedMap<Long, CacheData> getDocumentCacheData() {
 		return documentCacheData;
 	}
@@ -208,7 +229,10 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		return filterCacheCumulativeData;
 	}
 
-
+    public CacheData getPerSegFilterCumulativeData() {
+        return perSegmentFilterCumulativeData;
+    }
+	
 	public CacheData getDocumentCacheCumulativeData() {
 		return documentCacheCumulativeData;
 	}
@@ -228,7 +252,10 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		return filterCacheDescription;
 	}
 
-
+    public String getPerSegFilterDescription() {
+        return perSegmentFilterDescription;
+    }
+	
 	public long getRefreshInterval() {
 		return refreshInterval;
 	}
