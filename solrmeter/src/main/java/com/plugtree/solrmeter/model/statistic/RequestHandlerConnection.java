@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrResponse;
 import org.apache.solr.client.solrj.SolrServer;
@@ -41,7 +43,9 @@ import com.plugtree.solrmeter.model.exception.StatisticConnectionException;
  *
  */
 public class RequestHandlerConnection extends AbstractStatisticConnection {
-	
+
+    protected Logger logger = Logger.getLogger(this.getClass());
+
 	private SolrServer solrServer;
 	
 	@Inject
@@ -64,12 +68,16 @@ public class RequestHandlerConnection extends AbstractStatisticConnection {
 			cacheData.put(QUERY_RESULT_CACHE_NAME, getCacheData(namedList, "queryResultCache"));
 			cacheData.put(DOCUMENT_CACHE_NAME, getCacheData(namedList, "documentCache"));
 			cacheData.put(FIELD_VALUE_CACHE_NAME, getCacheData(namedList, "fieldValueCache"));
+			//cacheData.put(FIELD_CACHE_NAME, getCacheData(namedList, "fieldCache"));
+            cacheData.put(NCACHE_NAME, getCacheData(namedList, "nCache"));
 			
 			cacheData.put(CUMULATIVE_FILTER_CACHE_NAME, getCumulativeCacheData(namedList, "filterCache"));
 			cacheData.put(CUMULATIVE_PER_SEGMENT_FILTER_NAME, getCumulativeCacheData(namedList, "perSegFilter"));
             cacheData.put(CUMULATIVE_QUERY_RESULT_CACHE_NAME, getCumulativeCacheData(namedList, "queryResultCache"));
 			cacheData.put(CUMULATIVE_DOCUMENT_CACHE_NAME, getCumulativeCacheData(namedList, "documentCache"));
 			cacheData.put(CUMULATIVE_FIELD_VALUE_CACHE_NAME, getCumulativeCacheData(namedList, "fieldValueCache"));
+            //cacheData.put(CUMULATIVE_FIELD_CACHE_NAME, getCumulativeCacheData(namedList, "fieldCache"));
+			cacheData.put(CUMULATIVE_NCACHE_NAME, getCumulativeCacheData(namedList, "nCache"));
 		} catch (Exception e) {
 			throw new StatisticConnectionException(e);
 		}
@@ -78,9 +86,9 @@ public class RequestHandlerConnection extends AbstractStatisticConnection {
 	
 	@SuppressWarnings("unchecked")
 	private CacheData getCacheData(NamedList<Object> namedList, String cacheName) {
-	  NamedList<Object> cache = getCacheNamedList(namedList, cacheName);
-	   if(cache == null) {
-	      return null;
+	    NamedList<Object> cache = getCacheNamedList(namedList, cacheName);
+	    if(cache == null) {
+	        return null;
 	    }
 		NamedList<Object> stats = (NamedList<Object>)cache.get("stats");
 		return new CacheData((Long)stats.get("lookups"), (Long)stats.get("hits"), (Float)stats.get("hitratio"), (Long)stats.get("inserts"), (Long)stats.get("evictions"), Long.valueOf(stats.get("size").toString()), (Long)stats.get("warmupTime"));
@@ -95,11 +103,11 @@ public class RequestHandlerConnection extends AbstractStatisticConnection {
 	
 	@SuppressWarnings("unchecked")
 	private CacheData getCumulativeCacheData(NamedList<Object> namedList, String cacheName) {
-    NamedList<Object> cache = getCacheNamedList(namedList, cacheName);
-    if(cache == null) {
-       return null;
-     }
-   NamedList<Object> stats = (NamedList<Object>)cache.get("stats");
+        NamedList<Object> cache = getCacheNamedList(namedList, cacheName);
+        if(cache == null) {
+            return null;
+        }
+        NamedList<Object> stats = (NamedList<Object>)cache.get("stats");
 		return new CacheData((Long)stats.get("cumulative_lookups"), (Long)stats.get("cumulative_hits"), (Float)stats.get("cumulative_hitratio"), (Long)stats.get("cumulative_inserts"), (Long)stats.get("cumulative_evictions"));
 	}
 	
@@ -124,11 +132,14 @@ public class RequestHandlerConnection extends AbstractStatisticConnection {
 		}
 
 		@Override
-		public SolrResponse process(SolrServer server) throws SolrServerException,
-				IOException {
+		public SolrResponse process(SolrServer server) throws SolrServerException, IOException {
 			long startTime = System.currentTimeMillis();
 		    SolrPingResponse res = new SolrPingResponse();
-		    res.setResponse( server.request( this ) );
+		    try {
+		        res.setResponse( server.request( this ) );
+		    } catch (IOException ioe) {
+                logger.error("Error while tring to process MBean",ioe);
+		    }
 		    res.setElapsedTime( System.currentTimeMillis()-startTime );
 		    return res;
 		}

@@ -224,9 +224,11 @@ public class CacheHistoryPanel extends StatisticPanel implements ActionListener 
 		comboBoxCache = new JComboBox();
 		comboBoxCache.addItem("documentCache");
 		comboBoxCache.addItem("fieldValueCache");
+		comboBoxCache.addItem("fieldCache");
 		comboBoxCache.addItem("filterCache");
         comboBoxCache.addItem("perSegFilter");
 		comboBoxCache.addItem("queryResultCache");
+		comboBoxCache.addItem("nCache");
 		comboBoxCache.addActionListener(new ActionListener() {
 
 			@SuppressWarnings("unchecked")
@@ -278,6 +280,7 @@ public class CacheHistoryPanel extends StatisticPanel implements ActionListener 
 		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.documentCache"));
 		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.queryResultCache"));
 		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.fieldValueCache"));
+		xyDataset.removeSeries(I18n.get(PREFIX + "hitratio.nCache"));
 	}
 
 	/**
@@ -293,10 +296,10 @@ public class CacheHistoryPanel extends StatisticPanel implements ActionListener 
 			cumulativeEvictionsInfoPanel.setValue(String.valueOf(cacheData.getEvictions()));
 		} else {
 		  cumulativeLookupsInfoPanel.setValue("");
-      cumulativeHitsInfoPanel.setValue("");
-      cumulativeHitRatioInfoPanel.setValue("");
-      cumulativeInsertsInfoPanel.setValue("");
-      cumulativeEvictionsInfoPanel.setValue("");
+          cumulativeHitsInfoPanel.setValue("");
+          cumulativeHitRatioInfoPanel.setValue("");
+          cumulativeInsertsInfoPanel.setValue("");
+          cumulativeEvictionsInfoPanel.setValue("");
 		}
 		
 	}
@@ -356,11 +359,11 @@ public class CacheHistoryPanel extends StatisticPanel implements ActionListener 
 	private void refreshHitRatio() {
 //		synchronized(statistic) {
 			addSerie(statistic.getFilterCacheData(), "hitratio", PREFIX + "hitratio.filterCache");
-            addSerie(statistic.getFilterCacheData(), "hitratio", PREFIX + "hitratio.perSegFilter");
+            addSerie(statistic.getPerSegFilterData(), "hitratio", PREFIX + "hitratio.perSegFilter");
 			addSerie(statistic.getDocumentCacheData(), "hitratio", PREFIX + "hitratio.documentCache");
 			addSerie(statistic.getQueryResultCacheData(), "hitratio", PREFIX + "hitratio.queryResultCache");
 			addSerie(statistic.getFieldValueCacheData(), "hitratio", PREFIX + "hitratio.fieldValueCache");
-			
+            addSerie(statistic.getNCacheData(), "hitratio", PREFIX + "hitratio.nCache");			
 //		}
 	}
 

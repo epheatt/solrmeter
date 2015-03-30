@@ -42,8 +42,7 @@ public class CacheData {
 		this.warmupTime = warmupTime;
 	}
 	
-	public CacheData(long lookups, long hits, float hitratio, long inserts,
-			long evictions) {
+	public CacheData(long lookups, long hits, float hitratio, long inserts, long evictions) {
 		this(lookups, hits, hitratio, inserts, evictions, -1, -1);
 	}
 

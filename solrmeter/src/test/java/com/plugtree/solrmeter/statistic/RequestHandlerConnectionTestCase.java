@@ -67,7 +67,7 @@ public class RequestHandlerConnectionTestCase extends BaseTestCase {
 	}
 	
 	private SolrServer createMockSolrServer() throws MalformedURLException {
-		return this.createMockSolrServer("queryResultCache", "fieldCache", "documentCache", "fieldValueCache", "filterCache", "perSegFilter");
+		return this.createMockSolrServer("queryResultCache", "documentCache", "fieldCache", "fieldValueCache", "filterCache", "perSegFilter", "nCache");
 	}
 	
 	 private SolrServer createMockSolrServer(String... caches) throws MalformedURLException {

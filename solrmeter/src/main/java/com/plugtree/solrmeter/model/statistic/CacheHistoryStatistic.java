@@ -43,10 +43,15 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	 */
 	private SortedMap<Long, CacheData> filterCacheData;
 
-	/**
-     * Stores the historical data of the perSegmentFilter
+    /**
+     * Stores the historical data of the nCache
      */
-    private SortedMap<Long, CacheData> perSegmentFilterData;
+    private SortedMap<Long, CacheData> nCacheData;	
+	
+	/**
+     * Stores the historical data of the perSegFilter
+     */
+    private SortedMap<Long, CacheData> perSegFilterData;
 	
 	/**
 	 * Stores the historical data of the documentCache
@@ -62,6 +67,11 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	 * Stores the historical data of the fieldValueCache
 	 */
 	private SortedMap<Long, CacheData> fieldValueCacheData;
+
+   /**
+     * Stores the historical data of the fieldCache
+     */
+    private SortedMap<Long, CacheData> fieldCacheData;
 	
 	/**
 	 * Stores the cumulative data of the filterCache
@@ -69,9 +79,14 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	private CacheData filterCacheCumulativeData;
 
     /**
+     * Stores the cumulative data of the nCache
+     */
+    private CacheData nCacheCumulativeData;
+	
+    /**
      * Stores the cumulative data of the perSegmentFilter
      */
-    private CacheData perSegmentFilterCumulativeData;	
+    private CacheData perSegFilterCumulativeData;	
 	
 	/**
 	 * Stores the cumulative data of the documentCache
@@ -87,17 +102,37 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	 * Stores the cumulative data of the fieldValueCache
 	 */
 	private CacheData fieldValueCacheCumulativeData;
-	
+
+    /**
+     * Stores the cumulative data of the fieldCache
+     */
+    private CacheData fieldCacheCumulativeData;
+    
 	/**
 	 * Stores the description of the filterCache
 	 */
 	private String filterCacheDescription;
 
     /**
-     * Stores the description of the perSegmentFilter
+     * Stores the description of the fieldValueCache
      */
-    private String perSegmentFilterDescription;	
-	
+    private String fieldValueCacheDescription;
+
+    /**
+     * Stores the description of the fieldCache
+     */
+    private String fieldCacheDescription;
+
+    /**
+     * Stores the description of the perSegFilter
+     */
+    private String perSegFilterDescription;
+
+    /**
+     * Stores the description of the nCache
+     */
+    private String nCacheDescription;
+
 	/**
 	 * Connection with Solr statistics
 	 */
@@ -115,10 +150,12 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		super();
 		this.connection = connection;
 		this.filterCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
-		this.perSegmentFilterData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
+		this.perSegFilterData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
 		this.queryResultCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
 		this.documentCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
 		this.fieldValueCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
+        this.fieldCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
+		this.nCacheData = Collections.synchronizedSortedMap(new TreeMap<Long, CacheData>());
 		this.initTime = System.currentTimeMillis();
 	}
 	
@@ -129,16 +166,20 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		try {
 			cacheData = connection.getData();
 			put(time, filterCacheData, cacheData, RequestHandlerConnection.FILTER_CACHE_NAME);
-			put(time, perSegmentFilterData, cacheData, RequestHandlerConnection.PER_SEGMENT_FILTER_NAME);
+			put(time, perSegFilterData, cacheData, RequestHandlerConnection.PER_SEGMENT_FILTER_NAME);
 			put(time, queryResultCacheData, cacheData, RequestHandlerConnection.QUERY_RESULT_CACHE_NAME);
 			put(time, documentCacheData, cacheData, RequestHandlerConnection.DOCUMENT_CACHE_NAME);
 			put(time, fieldValueCacheData, cacheData, RequestHandlerConnection.FIELD_VALUE_CACHE_NAME);
+            put(time, fieldCacheData, cacheData, RequestHandlerConnection.FIELD_CACHE_NAME);
+			put(time, nCacheData, cacheData, RequestHandlerConnection.NCACHE_NAME);
 			
 			filterCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_FILTER_CACHE_NAME);
-            perSegmentFilterCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_PER_SEGMENT_FILTER_NAME);
+            perSegFilterCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_PER_SEGMENT_FILTER_NAME);
 			queryResultCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_QUERY_RESULT_CACHE_NAME);
 			documentCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_DOCUMENT_CACHE_NAME);
 			fieldValueCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_FIELD_VALUE_CACHE_NAME);
+            fieldCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_FIELD_CACHE_NAME);
+			nCacheCumulativeData = cacheData.get(RequestHandlerConnection.CUMULATIVE_NCACHE_NAME);
 			
 		} catch (StatisticConnectionException e) {
 			Logger.getLogger(this.getClass()).error("Could not update statistic", e);
@@ -159,7 +200,11 @@ public class CacheHistoryStatistic implements QueryStatistic {
 	}
 
     public SortedMap<Long, CacheData> getPerSegFilterData() {
-        return perSegmentFilterData;
+        return perSegFilterData;
+    }
+
+    public SortedMap<Long, CacheData> getNCacheData() {
+        return nCacheData;
     }
     
 	public SortedMap<Long, CacheData> getDocumentCacheData() {
@@ -224,13 +269,16 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		return fieldValueCacheData;
 	}
 
+    public SortedMap<Long, CacheData> getFieldCacheData() {
+        return fieldCacheData;
+    }	
 
 	public CacheData getFilterCacheCumulativeData() {
 		return filterCacheCumulativeData;
 	}
 
     public CacheData getPerSegFilterCumulativeData() {
-        return perSegmentFilterCumulativeData;
+        return perSegFilterCumulativeData;
     }
 	
 	public CacheData getDocumentCacheCumulativeData() {
@@ -242,20 +290,38 @@ public class CacheHistoryStatistic implements QueryStatistic {
 		return queryResultCacheCumulativeData;
 	}
 
-
 	public CacheData getFieldValueCacheCumulativeData() {
 		return fieldValueCacheCumulativeData;
 	}
 
+    public CacheData getFieldCacheCumulativeData() {
+        return fieldCacheCumulativeData;
+    }	
+	
+    public CacheData getNCacheCumulativeData() {
+        return nCacheCumulativeData;
+    }
+
+	public String getFieldValueCacheDescription() {
+		return fieldValueCacheDescription;
+	}
+
+	public String getFieldCacheDescription() {
+		return fieldCacheDescription;
+	}
 
 	public String getFilterCacheDescription() {
 		return filterCacheDescription;
 	}
 
     public String getPerSegFilterDescription() {
-        return perSegmentFilterDescription;
+        return perSegFilterDescription;
     }
-	
+
+    public String getNCacheDescription() {
+        return nCacheDescription;
+    }
+
 	public long getRefreshInterval() {
 		return refreshInterval;
 	}
